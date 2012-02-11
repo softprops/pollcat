@@ -1,0 +1,7 @@
+mu.consumer_key = YR_MEETUP_OAUTH_CONSUMER_KEY
+mu.consumer_secret = YR_MEETUP_OAUTH_CONSUMER_SECRET
+mu.event_id = MEETUP_EVENT_ID
+mu.api_key = YR_MEETUP_API_KEY
+host = http://localhost:8080
+cookie_secret = SOME_RANDOM_STRING
+redis_url = REDIS_URI

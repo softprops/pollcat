@@ -15,5 +15,7 @@ seq(lessSettings:_*)
 libraryDependencies ++= Seq(
   "net.databinder" %% "unfiltered-netty-server" % "0.5.3",
   "net.databinder" %% "unfiltered-netty-websockets" % "0.5.3",
-  "net.debasishg" %% "redisclient" % "2.4.2"
+  "net.debasishg" %% "redisclient" % "2.4.2",
+  "net.debasishg" %% "sjson" % "0.15",
+  "net.databinder" %% "dispatch-oauth" % "0.8.6"
 )
