@@ -16,9 +16,6 @@ object Server {
       .handler(Cat.websockets onPass(_.sendUpstream(_)))
       .handler(Planify(
         (intents.head /: intents.tail)(_ orElse _)
-      ))
-      .run({ s => if(a.contains("-b")) Browser.open(s.url) }, afterStop = {
-        _ => Cat.shutdown()
-      })
+      )).run
   }
 }

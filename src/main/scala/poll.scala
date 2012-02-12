@@ -3,40 +3,32 @@ package pollcat
 import unfiltered.request._
 import unfiltered.response._
 import unfiltered.Cycle.Intent
-
+import net.liftweb.json.JsonDSL._
+import net.liftweb.json.JsonParser._
+import net.liftweb.json.JsonAST
 /**
  * This module provides read/write access to poll info
  * Poll questions are stored in redis in the following format
  * pollcat:{poll-name}:qs:{id} -> { q -> question, votes -> count }
  * The id is generated from the incremented counter key count:pollcat:qs
  */
-object Poll extends DefaultLogging with Json {
+object Poll extends DefaultLogging {
   import unfiltered.request.QParams._
 
   val DefaultPoll = "talk"
   
   type QMap = Map[String, String]
 
-  private val OkStatus = JsonContent ~>
-    ResponseString(json(Map("status" -> "200")))
+  private val OkStatus = Json("status" -> 200)
 
-  private val NotFoundStatus = JsonContent ~> 
-    ResponseString(json(Map("status" -> "404")))
-
-  private def questionResponse(qs: Seq[QMap]) =
-    JsonContent ~> ResponseString(qs.map { m =>
-      json(Map("id"-> m("id"), "text" -> m("q"), "votes" -> m("votes")))
-    } mkString("[", ",", "]"))
+  private val NotFoundStatus = Json(("status" -> 404))
 
   val questions: Intent[Any, Any] = {
     case GET(Path("/polls")) & Params(p) =>
-      log.info("getting questions")
       Store { s =>
         val keys = s.keys(
           "pollcat:%s:qs:*" format DefaultPoll).flatten.flatten
-        log.info("question keys %s" format keys)
-        questionResponse(
-          ((List.empty[QMap] /: keys) {
+        questionResponse(((List.empty[QMap] /: keys) {
             (a,e) => s.hgetall(e).getOrElse(
               Map.empty[String, String]) + ("id" -> e) :: a
           }))
@@ -58,10 +50,7 @@ object Poll extends DefaultLogging with Json {
               log.info("deleting question %s" format key)
               s.del(key)
               OkStatus
-            } else {
-              log.info("question %s does not exist %s" format key)
-              NotFoundStatus
-            }
+            } else NotFoundStatus
           }
         }
         expecting(p) orFail withErrors
@@ -103,9 +92,8 @@ object Poll extends DefaultLogging with Json {
           val id = s.incr("count:pollcat:qs").getOrElse(1)
           val key = "pollcat:%s:qs:%s" format(DefaultPoll, id)
           s.hmset(key, Map(
-            "q" -> q.get, "votes" -> 0
+            "q" -> q.get.trim, "votes" -> 0
           ))
-          log.info("created questions %s" format key)
           val value = "ask:%s:%s" format(id, q.get) 
           log.info("publishing %s on chan (key) %s" format(value, DefaultPoll))
           Cat.publish(DefaultPoll, value)
@@ -117,6 +105,15 @@ object Poll extends DefaultLogging with Json {
   }
 
   private def withErrors(errs: Seq[Fail[_]]) =
-    JsonContent ~> ResponseString(json((Map("status" -> "400") /: errs)(
-      (a,e) => a + (e.name -> e.error.toString))))
+    Json((("status" -> 400) ~ ("f" -> "u") /*:)*/ /: errs)(
+      (a:JsonAST.JObject, e: Fail[_]) => (a ~ (e.name -> e.error.toString))))
+
+  private def questionResponse(qs: Seq[QMap]) = {
+    var js = qs.map { m =>
+      ("id"-> m("id")) ~
+      ("text" -> m("q")) ~
+      ("votes" -> m("votes"))
+    }
+    Json(js)
+  }
 }

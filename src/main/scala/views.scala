@@ -13,7 +13,7 @@ object Views {
   def script(path: String) =
     <script  type="text/javascript" src={ path }></script>
 
-  def apply(title: String)(
+  def apply(title: String, authed: Boolean = false)(
     contents: NodeSeq)(styles: String*)(scripts: String*) =
     Html(
       <html>
@@ -27,7 +27,14 @@ object Views {
           <div id="head">
             <div class="contained">
               <h1>POLLCAT</h1>
+              <p class="subtle-in-dark">May I take your question?</p>
             </div>
+          </div>
+          <div id="sub-head">
+            <div id="auth" class="contained">{
+              if(authed) <a class="btn" href="/logout">Log out</a>
+              else <a class="btn" id="login" href="/login">Login with Meetup</a>
+            }</div>
           </div>
           <div id="contents" class="contained">{ contents }</div>
           { script("/js/pollcat.js") }
@@ -36,8 +43,11 @@ object Views {
       </html>
     )
 
-  val index = apply("pollcat")(
-    <div id="auth"><a class="btn" href="/logout">Log out</a></div>
+  val index = apply("pollcat", authed = true)(
+    <div id="currently">
+      <h2>Currently asking</h2>
+      <div id="asking">nothing</div>
+    </div>
     <form id="ask" action="/polls" method="POST">
       <input name="name" type="hidden" value="talk"/>
       <textarea name="q" id="q" maxlength="255"/>
@@ -49,9 +59,5 @@ object Views {
     </div>
   )()()
 
-  val alien = apply("pollcat")(
-    <div id="auth">
-      <a class="btn" id="login" href="/login">Login with Meetup</a>
-    </div>
-  )()()
+  val alien = apply("pollcat")(<div id="what-is-this">curious? login.</div>)()()
 }

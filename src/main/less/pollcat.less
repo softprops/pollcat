@@ -1,9 +1,10 @@
 @link-color: #FF297E;
 @link-color-hover: #35E7FF;
-@width: 500px;
+@width: 700px;
 @btn-grad-top: #66efff;
 @btn-grad-bot: #25DBFF;
 @font-family: Helvetica, Arial, san-serif;
+@bold-font: 'Helvetica Bold', Helvetica, Arial, san-serif;
 
 html, body, div, span, applet, object, iframe,html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}table{border-collapse:collapse;border-spacing:0}
 
@@ -87,7 +88,8 @@ body, textarea {
 form {
   textarea {
     .rounded;
-    padding:.25em;
+    border:#ccc 1px solid;
+    padding:.5em;
     margin:.25em 0;
     width:100%;
   }
@@ -116,12 +118,35 @@ h1 {
   font-size:90px;
 }
 
+h2 {
+  font-size:60px;
+}
+
+#asking {
+  font-weight:bold;
+  font-family:@bold-font;
+  font-size:60px;
+  border-bottom:1px solid #ccc;
+  padding:.25em 0;
+}
+
+.subtle-in-dark {
+  color:lighten(#616161, 20%);
+}
+
 #head {
   color:#fff;
   .gradient(#616161, #4E4D4D);
-  h1 {
+  h1, p {
     text-align:center;
+    font-weight:bold;
   }
+  p { padding:0 0 .5em 0; }
+}
+
+#sub-head {
+  padding:.5em;
+  .gradient(#eee, #fbfbfb);
 }
 
 #ask {
@@ -129,11 +154,17 @@ h1 {
   margin:.25em 0;
 }
 
+#auth {
+  text-align:right;
+}
+
+#what-is-this {
+  text-align:center;
+}
+
 #contents {
   padding: 1em;
-  #auth {
-    text-align:right;
-  }
+
   #questions {
     .clearfix;
     clear:both;
@@ -149,12 +180,16 @@ h1 {
       }
       .txt {
         font-weight:bold;
-        font-family:'Helvetica Bold', Helvetica, Arial, san-serif;
+        font-family:@bold-font;
         float:left;
         width:420px;
         font-size:40px;
       }
       .vote {
+        .clearfix;
+        .rounded;
+        padding:.25em;
+        background: darken(#eee, 10%);
         float:right;
         display:none;
       }
