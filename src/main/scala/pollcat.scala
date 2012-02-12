@@ -51,7 +51,8 @@ object Pollcat extends DefaultLogging with ManagedHttp {
     case req @ Path("/") =>
       req match {
         case CookieToken(ClientToken(tok, sec, Some(_), Some(mid))) =>
-          Views.index
+          if(Meetup.rsvped(Config("mu.event_id"), Token(tok,sec))) Views.index
+          else Views.sry
         case _ => Views.alien
       }
   }

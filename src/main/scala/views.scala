@@ -43,7 +43,7 @@ object Views {
       </html>
     )
 
-  val index = apply("pollcat", authed = true)(
+  val index = apply("option scala", authed = true)(
     <div id="currently">
       <h2>Currently asking</h2>
       <div id="asking">nothing</div>
@@ -59,5 +59,7 @@ object Views {
     </div>
   )()()
 
-  val alien = apply("pollcat")(<div id="what-is-this">curious? login.</div>)()()
+  val alien = apply("option scala")(<div id="what-is-this">curious? login.</div>)()()
+
+  val sry = apply("option scala")(<div id="what-is-this">sorry. looks like you're not RSVP'd :/</div>)()()
 }

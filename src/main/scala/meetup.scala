@@ -20,7 +20,7 @@ object Meetup {
 
   def http = Http
 
-  def has_rsvp(eventId: String, tok: oauth.Token) = {
+  def rsvped(eventId: String, tok: oauth.Token) = {
     val mu = OAuthClient(consumer, tok)
     val (res, _) = http(mu.handle(Events.id(eventId)))
     res.flatMap(Event.myrsvp).contains("yes")

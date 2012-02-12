@@ -93,9 +93,11 @@ $ ->
   # ask
   $("#ask").submit (e) ->
     e.preventDefault()
-    $.post "/polls", $(this).serialize(), (d) ->
-      $("#q").val("")
-      false
+    if $.trim($("#q").val()).length > 0
+      $.post "/polls", $(this).serialize(), (d) ->
+        $("#q").val("")
+    false
+
 
   # get all of a poll's questions
   $.get("/polls",
