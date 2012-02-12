@@ -26,8 +26,8 @@ object Views {
         <body>
           <div id="head">
             <div class="contained">
-              <h1>POLLCAT</h1>
-              <p class="subtle-in-dark">May I take your question?</p>
+              <h1>Option[Scala]</h1>
+              <p class="subtle-in-dark">Adding Scala to yr companies stack</p>
             </div>
           </div>
           <div id="sub-head">
