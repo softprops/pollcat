@@ -1,10 +1,6 @@
 $ = jQuery
 $ ->
 
-  if not 'console' in window
-    window.console =
-      log: (e) -> return
-
   questions = ($ '#questions')
 
   renderQuestion = (q) ->
@@ -28,11 +24,9 @@ $ ->
     return
 
   upvote = (id) ->
-    console.log "up voting #{id}"
     return
 
   downvote = (id) ->
-    console.log "down voting #{id}"
     return
 
   process = (m) ->
@@ -44,8 +38,6 @@ $ ->
         id: id,
         text: data,
         votes: 0
-    else
-      console.log "malformed message #{m}"
 
   # upvote
   $(".y").live 'click', (e) ->
@@ -103,7 +95,7 @@ $ ->
   $.get("/polls",
     name: 'talk',
     (qs) => questionAsked(q) for q in qs
-  ).error (a, e) -> console.log e
+  )
 
   $("#login").live 'click', (e) -> $(@).html "Redirecting to Meetup"
 
