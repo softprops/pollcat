@@ -1,11 +1,10 @@
 package pollcat
 
-object Meetup {
+object Meetup extends DefaultLogging with ManagedHttp {
   import dispatch._
   import meetup._
   import dispatch.liftjson.Js._
   import oauth._
-  import Http._
 
   import net.liftweb.json.JsonAST._
   import net.liftweb.json.JsonDSL._
@@ -17,8 +16,6 @@ object Meetup {
     Config("mu.consumer_key"), Config("mu.consumer_secret"))
 
   val client: Client = APIKeyClient(Config("mu.api_key"))
-
-  def http = Http
 
   def rsvped(eventId: String, tok: oauth.Token) = {
     val mu = OAuthClient(consumer, tok)

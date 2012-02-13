@@ -23,8 +23,11 @@ object Poll extends DefaultLogging {
 
   private val NotFoundStatus = Json(("status" -> 404))
 
+  private val EventId = Config("mu.event_id")
+
   val questions: Intent[Any, Any] = {
-    case GET(Path("/polls")) & Params(p) =>
+    case GET(Path("/polls")) & Params(p) &
+      CookieToken(ClientToken(tok, sec, Some(_), Some(mid)))  =>
       Store { s =>
         val keys = s.keys(
           "pollcat:%s:qs:*" format DefaultPoll).flatten.flatten
@@ -33,6 +36,30 @@ object Poll extends DefaultLogging {
               Map.empty[String, String]) + ("id" -> e) :: a
           }))
       }
+
+      
+    case POST(Path("/current")) & Params(p) &
+      CookieToken(ClientToken(tok, sec, Some(_), Some(mid))) =>
+      val expecting = for {
+        name <- lookup("name") is required("missing name")
+        q <- lookup("q") is required("missing q")
+        host <- external("host", Some(Meetup.hosting(mid, EventId))) is
+            pred({ h => h /* valid only when true */}, { h => "must be a host to perform this action" })
+      } yield {
+        Store { s =>
+          val key = "pollcat:%s:qs:%s" format(DefaultPoll, q.get)
+          if(s.exists(key)) {
+            val value = "curr:%s:%s" format(q.get, "") 
+            log.info("publishing %s on chan (key) %s" format(value, DefaultPoll))
+            Cat.publish(DefaultPoll, value)
+          } else {
+            log.info("%s attempted to set invalid question %s as the current question" format(mid, key))
+          }
+          OkStatus
+        }
+      }
+      expecting(p) orFail withErrors
+
 
     case POST(Path("/questions")) & Params(p) & 
       CookieToken(ClientToken(tok, sec, Some(_), Some(mid))) =>
@@ -43,6 +70,8 @@ object Poll extends DefaultLogging {
                  _ + " must be %s".format(DefaultPoll))
           q <- lookup("q") is required("missing q") is
             nonempty("missing q")
+          host <- external("host", Some(Meetup.hosting(mid, EventId))) is
+            pred({ h => h /* valid only when true */}, { h => "must be a host to perform this action" })
         } yield {
           Store { s =>
             val key = "pollcat:%s:qs:%s" format(DefaultPoll, q.get)
@@ -73,7 +102,7 @@ object Poll extends DefaultLogging {
         Store { s =>
           val key = "pollcat:%s:qs:%s" format(DefaultPoll, q.get)
           if(s.exists(key)) {
-            s.hincrby(key, "votes", if("+".equals(v.get)) 1 else -1)
+            s.hincrby(key, "votes", if("up".equals(v.get)) 1 else -1)
             OkStatus
           } else NotFoundStatus
         }
@@ -97,7 +126,6 @@ object Poll extends DefaultLogging {
           val value = "ask:%s:%s" format(id, q.get) 
           log.info("publishing %s on chan (key) %s" format(value, DefaultPoll))
           Cat.publish(DefaultPoll, value)
-          //s.publish(DefaultPoll, value)
           OkStatus
         }
       }

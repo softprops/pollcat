@@ -23,7 +23,7 @@ object CookieToken {
     case Cookies(cookies) => (cookies("token"), cookies("token.sig")) match {
       case (Some(tok), Some(sig)) if(SignedCookies.valid(tok, sig)) =>
         Some(ClientToken.fromCookieString(tok.value))
-      case p => println(p); None
+      case p => None
     }
   }
   def apply[T](r: HttpRequest[T]) = unapply(r)

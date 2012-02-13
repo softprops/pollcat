@@ -17,7 +17,7 @@ object Cat extends DefaultLogging {
 
   def publish(chan: String, msg: String) =
     msg.split(':') match {
-      case Array("up" | "down" | "ask", _*) => write(chan, msg)
+      case Array("up" | "down" | "ask" | "curr", _*) => write(chan, msg)
       case mm => log.info("discarding malformed msg %s" format mm)
     }
 

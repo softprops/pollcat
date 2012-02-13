@@ -14,7 +14,7 @@ object Views {
     <script  type="text/javascript" src={ path }></script>
 
   def apply(title: String, authed: Boolean = false)(
-    contents: NodeSeq)(styles: String*)(scripts: String*) =
+    contents: NodeSeq)(styles: Seq[String] = Nil)(scripts: Seq[String] = Nil) =
     Html(
       <html>
         <head>
@@ -43,12 +43,12 @@ object Views {
       </html>
     )
 
-  val index = apply("option scala", authed = true)(
+  def index(admin: Boolean) = apply("option scala", authed = true)(
     <div id="currently">
       <h2>Currently asking</h2>
       <div id="asking">nothing</div>
     </div>
-    <form id="ask" action="/polls" method="POST">
+    <form id="ask" action="/polls" method="POST">      
       <input name="name" type="hidden" value="talk"/>
       <textarea name="q" id="q" maxlength="255"/>
       <input type="submit" value="Ask a Question" class="btn"/>
@@ -57,7 +57,7 @@ object Views {
       <h2>Questions</h2>
       <ul id="questions"></ul>
     </div>
-  )()()
+  )()(if(admin) Seq("/js/admin.js") else Nil)
 
   val alien = apply("option scala")(<div id="what-is-this">curious? login.</div>)()()
 
