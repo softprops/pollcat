@@ -93,8 +93,9 @@ $ ->
   $(".a").live "click", (e) ->
     e.preventDefault()
     q = $(@).parent().parent().parent().attr("id").substring(2)
-    asking q
-    $.post('/current', (name: 'talk', q: q), (e) -> return)
+    $.post('/current', (name: 'talk', q: q), (e) ->
+      asking(q) if e.status is 200
+    )
     false
 
   # voting options
