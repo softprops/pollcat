@@ -12,8 +12,8 @@ object Server {
       Poll.questions, Poll.ask, Poll.votes,
       Pollcat.authentication, Pollcat.browser)
     Http(Option(Env("PORT")).map(_.toInt).getOrElse(8080))
-      .resources(new URL(getClass().getResource("/www/robots.txt"), "."))
       .handler(Cat.websockets onPass(_.sendUpstream(_)))
+      .resources(new URL(getClass().getResource("/www/robots.txt"), "."))
       .handler(Planify(
         (intents.head /: intents.tail)(_ orElse _)
       )).run
