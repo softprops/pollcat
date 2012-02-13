@@ -93,6 +93,7 @@ $ ->
   $(".a").live "click", (e) ->
     e.preventDefault()
     q = $(@).parent().parent().parent().attr("id").substring(2)
+    asking q
     $.post('/current', (name: 'talk', q: q), (e) -> return)
     false
 
