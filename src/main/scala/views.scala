@@ -37,7 +37,6 @@ object Views {
             }</div>
           </div>
           <div id="contents" class="contained">{ contents }</div>
-          { script("/js/pollcat.js") }
           { scripts map(script) }
         </body>
       </html>
@@ -57,7 +56,7 @@ object Views {
       <h2>Questions</h2>
       <ul id="questions"></ul>
     </div>
-  )()(if(admin) Seq("/js/admin.js") else Nil)
+  )()(if(admin) Seq("/js/pollcat.js", "/js/admin.js") else Seq("/js/pollcat.js"))
 
   val alien = apply("option scala")(<div id="what-is-this">curious? login.</div>)()()
 
