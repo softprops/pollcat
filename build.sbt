@@ -4,6 +4,8 @@ name := "pollcat"
 
 version := "0.1.0"
 
+seq(heroicSettings: _*)
+
 seq(coffeeSettings:_*)
 
 seq(lessSettings:_*)
