@@ -47,8 +47,8 @@ $ ->
 
   process = (m) ->
     [action, id, data] = m.split ':'
-    if action is 'up' then upvote(id)
-    else if action is 'down' then downvote(id)
+    if action is 'up' then upvote("q-#{id}")
+    else if action is 'down' then downvote("q-#{id}")
     else if action is 'ask'
       questionAsked
         id: id,
@@ -62,7 +62,6 @@ $ ->
     self = $(@)
     q = self.parent().parent().parent().attr("id")
     $.post '/votes', (poll: 'talk', q: q.substring(2), v: 'up'), (e) ->
-      upvote(q) if e.status is 200
       return
     false
 
@@ -71,7 +70,6 @@ $ ->
     e.preventDefault()
     q = $(@).parent().parent().parent().attr("id")
     $.post '/votes', (poll: 'talk', q: q.substring(2),  v: 'down'), (e) ->
-      downvote(q) if e.status is 200
       return
     false
 
@@ -127,7 +125,7 @@ $ ->
     cat.onmessage = (m) ->
       process m.data
       return
-    if 'onbeforeunload' in window then window.onbeforeunload (e) -> cat.close()
+    #if 'onbeforeunload' in window then window.onbeforeunload (e) -> cat.close()
     return
   else
     alert 'Your browser is inferior and thus does not support the html5 standard for websockets'

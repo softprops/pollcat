@@ -103,6 +103,9 @@ object Poll extends DefaultLogging {
           val key = "pollcat:%s:qs:%s" format(DefaultPoll, q.get)
           if(s.exists(key)) {
             s.hincrby(key, "votes", if("up".equals(v.get)) 1 else -1)
+             val value = "%s:%s:%s" format(v.get, q.get,"") 
+            log.info("publishing %s on chan (key) %s" format(value, DefaultPoll))
+            Cat.publish(DefaultPoll, value)
             OkStatus
           } else NotFoundStatus
         }
