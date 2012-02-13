@@ -6,7 +6,7 @@ $ ->
 
   renderQuestion = (q) ->
     id = q.id.split(':').pop()
-    adminExtras = if window._admin then "<div> <a class='d' href='#'>x</a> <a class='a' href='#'>!</a> </div>" else ""
+    adminExtras = if window._admin then "<div> <a class='d' href='#'>☠</a> <a class='a' href='#'>?</a> </div>" else ""
     "<li class='q' id='q-#{id}' data-votes='#{q.votes}'>
       <div class='vcount'>#{q.votes}</div>
       <div class='txt'>#{q.text}</div>
